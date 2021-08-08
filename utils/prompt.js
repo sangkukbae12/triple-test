@@ -60,6 +60,25 @@ function makePrompt() {
   }
 }
 
+function getOptimizedValue(values, weights, target) {
+  let T = new Array(values.length + 1);
+  for(let i = 0; i < T.length; i++){
+    T[i] = new Array(target+1).fill(0);
+  }
+
+  for (let i = 1; i <= values.length; i++) {
+    for (let j = 0; j <= target; j++) {
+      if (weights[i-1] > j) {
+        T[i][j] = T[i-1][j];
+      } else {
+        T[i][j] = Math.max(T[i-1][j], T[i-1][j-weights[i-1]] + values[i-1]);
+      }
+    }
+  }
+
+  return T[values.length][target];
+}
+
 module.exports = {
   prompts,
   promptSubscriber 
